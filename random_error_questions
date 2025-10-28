@@ -1,0 +1,45 @@
+🔍 AWS Error-Explainer Questions
+
+
+!explain RequestLimitExceeded: Request limit exceeded. (EC2)
+!explain ThrottlingException: Rate exceeded on DynamoDB
+!explain InvalidGroupId.NotFound: The security group 'sg-12345' does not exist
+!explain BucketAlreadyExists: The requested bucket name is not available
+!explain InvalidAMIID.NotFound: ami-0abcdef1234567890
+!explain SubnetNotFound: subnet-12345
+!explain UnauthorizedOperation: You are not authorized to perform this operation
+!explain SnapshotCreationPerVolumeRateExceeded
+!explain ECS service (service my-service) is unable to place tasks
+!explain Lambda: InvalidParameterValueException - Error occurred while GetObject. S3 Error Code: NoSuchKey
+
+
+🏗️ Infrastructure Design (Natural → Terraform)
+
+!generate terraform Create a VPC with 2 public subnets, 2 private subnets, NAT gateways, and an Internet gateway across us-east-1a and us-east-1b
+!generate terraform An S3 bucket with versioning, AES-256 encryption, and a lifecycle rule to move objects to Glacier after 30 days
+!generate terraform A Lambda function triggered by an S3 PUT event, with IAM role and CloudWatch logs
+!generate terraform An Auto Scaling Group of t3.micro EC2s behind an Application Load Balancer, using a launch template
+!generate terraform A DynamoDB table with on-demand billing, point-in-time recovery, and a GS
+
+
+
+📊 Log / Metric Prompts (for when we add !analyze logs)
+
+
+!analyze logs /aws/lambda/production-api 1
+!analyze logs /aws/ec2/management 2
+
+
+Ask these live in interviews—easy 30-second demo:
+“Why did my AMI disappear?” → !explain InvalidAMIID.NotFound
+“What’s rate-limiting in AWS?” → !explain ThrottlingException
+“Generate secure S3 boilerplate” → !generate terraform encrypted S3 bucket with KMS
+
+
+
+Temperature Tip:
+
+0.0 → Very deterministic (factual, repetitive)
+0.2 → Best for code and precise answers
+0.3 → Balanced and concise
+0.7+ → More creative, but can drift off-topic
