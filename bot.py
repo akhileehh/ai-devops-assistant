@@ -22,6 +22,12 @@ from gemini_helper import (
 
 )
 
+from metrics_helper import start_metrics_server, track_command, command_counter, command_duration, error_counter
+
+# Start Prometheus metrics endpoint on port 8000
+start_metrics_server()
+
+
 load_dotenv()
 
 # Initialize Discord bot
@@ -83,6 +89,7 @@ async def hello(interaction: discord.Interaction):
 # AWS Commands
 
 @tree.command(name="list_ec2", description="List all EC2 instances in your AWS account")
+@track_command("list_ec2")
 async def list_ec2_cmd(interaction: discord.Interaction):
     await interaction.response.defer()  # shows “thinking…” status
     msg = get_ec2_list()
@@ -90,6 +97,7 @@ async def list_ec2_cmd(interaction: discord.Interaction):
 
 
 @tree.command(name="list_s3", description="List all S3 buckets")
+@track_command("list_s3")
 async def list_s3_cmd(interaction: discord.Interaction):
     await interaction.response.defer()
     msg = get_s3_list()
@@ -97,6 +105,7 @@ async def list_s3_cmd(interaction: discord.Interaction):
 
 
 @tree.command(name="aws_health", description="Check AWS EC2 and CloudWatch service health")
+@track_command("aws_health")
 async def aws_health_cmd(interaction: discord.Interaction):
     await interaction.response.defer()
     msg = get_health()
@@ -104,6 +113,7 @@ async def aws_health_cmd(interaction: discord.Interaction):
 
 
 @tree.command(name="analyze_logs", description="Summarize CloudWatch log errors and possible fixes")
+@track_command("analyze_logs")
 @app_commands.describe(
     log_group="Enter your CloudWatch log group name",
     hours="Number of past hours to analyze (default: 1)",
@@ -115,6 +125,7 @@ async def analyze_logs_cmd(interaction: discord.Interaction, log_group: str, hou
 
 
 @tree.command(name="explain", description="Explain any AWS error and suggest a fix")
+@track_command("explain")
 @app_commands.describe(
     error_message="Paste your AWS error message here"
 )
@@ -126,6 +137,7 @@ async def explain_cmd(interaction: discord.Interaction, error_message: str):
 
 
 @tree.command(name="generate_terraform", description="Create Terraform from plain English")
+@track_command("generate_terraform")
 @app_commands.describe(description="Type What to build like (VPC, Ec2, Bucket, Lambda, Private subnet, Public subnet, …)")
 async def generate_terraform_cmd(interaction: discord.Interaction, description: str):
     await interaction.response.defer()
@@ -135,6 +147,7 @@ async def generate_terraform_cmd(interaction: discord.Interaction, description: 
 
 
 @tree.command(name="costs", description="AWS spend breakdown (last N days)")
+@track_command("costs")
 @app_commands.describe(days="Type how many days(default 7)")
 async def costs_cmd(interaction: discord.Interaction, days: int = 7):
     await interaction.response.defer()
@@ -148,6 +161,7 @@ async def costs_cmd(interaction: discord.Interaction, days: int = 7):
 
 
 @tree.command(name="security", description="Quick security posture check")
+@track_command("security")
 async def security_cmd(interaction: discord.Interaction):
     await interaction.response.defer()
     audit = ai_security_audit()
