@@ -68,10 +68,10 @@ async def on_message(message):
 
     content = message.content.lower()
 
-    # ---- Greeting trigger ----
+    # ---- Greeting trigger with personalized reply ----
     if any(greet in content for greet in ["hi", "hello", "hey"]) and "i am" in content:
-        romantic_text = greet_reply(message.content)
-        await message.channel.send(romantic_text)
+        greet_text = greet_reply(message.content)
+        await message.channel.send(greet_text)
         return  
 
     # ---- Normal greeting/help trigger ----
@@ -102,11 +102,12 @@ async def on_message(message):
 @tree.command(name="hello", description="Say hi to your assistant")
 async def hello(interaction: discord.Interaction):
     await interaction.response.send_message(
-        "👋 Hello! I'm your DevOps assistant, ready to help with AWS and DevOps tasks!\n" \
-        "Built by **Akhil**\n"
-        "Helps manage EC2, S3, CloudWatch logs, and more!"
+         "**👋 Hello!**\n"
+        "I'm your **AI DevOps Assistant**, always ready to help you with **AWS** and **DevOps** tasks!\n\n"
+        "👨‍💻 **Builder:** Akhil \n"
+        "☁️ **Capabilities:** Manage **EC2**, **S3**, **IAM**, analyze **CloudWatch Logs**, automate with **Terraform**, and more!\n\n"
+        "🧠 *Let's simplify cloud management together!*"
     )
-
 
 
 
