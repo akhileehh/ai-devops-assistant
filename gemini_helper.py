@@ -63,3 +63,23 @@ def ai_security_audit() -> str:
     except Exception as e:
         return f"Security audit error: {e}"
     
+
+
+def greet_reply(user_message: str) -> str:
+    """Generate a greeting reply using Gemini."""
+    prompt = (
+        f"Someone said: '{user_message}'. "
+        "Reply politely and warmly, as a helpful AI assistant and greet them. "
+        "Add a touch of boldness but keep it respectful and classy. "
+        "Keep it under 100 words."
+    )
+    try:
+        response = model.generate_content(prompt, generation_config={"temperature": 0.9})
+        if response and response.text:
+            return response.text.strip()
+        else:
+            return "You're making me blush, but I can’t seem to find words right now 😳"
+    except Exception as e:
+        return f"Gemini error: {e}"
+
+

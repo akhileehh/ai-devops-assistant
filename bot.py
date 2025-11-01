@@ -19,6 +19,7 @@ from gemini_helper import (
     ai_summarize_cost,
     ai_disclaimer_embed,
     ai_security_audit,
+    greet_reply,
 
 )
 
@@ -44,20 +45,39 @@ tree = client.tree #slash command system
 
 @client.event
 async def on_ready():
-    await tree.sync()  # register slash commands globally
-    print(f"{client.user} is now online,you can use slash commands!")
+    # Set bot status
+    await client.change_presence(
+        activity=discord.Game(name="by Akhil"),
+        status=discord.Status.online
+    )
+
+    # Sync slash commands
+    try:
+        synced = await tree.sync()  # Register commands globally
+        print(f"✅ {client.user} is now online with {len(synced)} slash command(s) synced!")
+    except Exception as e:
+        print(f"❌ Error syncing commands: {e}")
+
+
 
 @client.event
 async def on_message(message):
-    # Ignore bot's own messages
+    # Ignore bot’s own messages
     if message.author == client.user:
         return
 
     content = message.content.lower()
 
-   
+    # ---- Greeting trigger ----
+    if any(greet in content for greet in ["hi", "hello", "hey"]) and "i am" in content:
+        romantic_text = greet_reply(message.content)
+        await message.channel.send(romantic_text)
+        return  
+
+    # ---- Normal greeting/help trigger ----
     if content in ["hi", "hello", "hey", "help", "menu", "start"]:
-        await message.channel.send(f"👋 Hello {message.author.name}!🤖 I'm your DevOps assistant ,Happy to help you !\n"
+        await message.channel.send(
+            f"👋 Hello {message.author.name}! 🤖 I'm your DevOps assistant, happy to help!\n"
             "**Available Commands:**\n"
             "• `/hello` - Greet the bot\n"
             "• `/generate_terraform` - Create Terraform from text\n"
@@ -68,21 +88,25 @@ async def on_message(message):
             "• `/analyze_logs` - Summarize CloudWatch logs\n"
             "• `/explain` - Explain AWS errors\n"
             "• `/security` - Quick security audit\n"
-            "• `/disclaimer` - View bot usage disclaimer\n"
-            "• `/menu` - Use this command for toggle command menu\n"
-
+            "• `/disclaimer` - View bot disclaimer\n"
+            "• `/menu` - Toggle command menu\n"
         )
+        return
 
     # Let slash commands still work
     await client.process_commands(message)
 
 
 
+
 @tree.command(name="hello", description="Say hi to your assistant")
 async def hello(interaction: discord.Interaction):
     await interaction.response.send_message(
-        "👋 Hello! I'm your DevOps assistant, ready to help with AWS and DevOps tasks!"
+        "👋 Hello! I'm your DevOps assistant, ready to help with AWS and DevOps tasks!\n" \
+        "Built by **Akhil**\n"
+        "Helps manage EC2, S3, CloudWatch logs, and more!"
     )
+
 
 
 
